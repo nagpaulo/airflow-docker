@@ -37,6 +37,7 @@ default_args = {
     tags=["transform", "google", "bucket"],
 )
 def get_dados_create_paquet():
+    
     @task(task_id="extract_users")
     def extract_users():
         try:
@@ -101,19 +102,22 @@ def get_dados_create_paquet():
             print(f"Error connecting to MongoDB: {str(e)}")
             raise
     
-    @task(task_id="gerar_paquet", retries=2)
-    def converter_df_paquet(df, file):
-        # Convertendo o DataFrame para um Table do PyArrow
-        table = pa.Table.from_pandas(df)
+    def gerar_paquet(id, df, file):    
+        @task(task_id=f"gerar_paquet_{id}", retries=2)
+        def converter_df_paquet(df, file):
+            # Convertendo o DataFrame para um Table do PyArrow
+            table = pa.Table.from_pandas(df)
 
-        # Escrevendo o Table como um arquivo Parquet
-        return pq.write_table(table, file)
+            # Escrevendo o Table como um arquivo Parquet
+            return pq.write_table(table, file)
+        
+        return converter_df_paquet(df, file)
     
     
     @task_group(group_id='Ingestion')
     def injection_datalake(users, payments):
-        file_paquet_user = converter_df_paquet(users, f"{USER_PARQUET}")
-        file_paquet_payments = converter_df_paquet(payments, f"{PAYMENTS_PARQUET}")
+        file_paquet_user = gerar_paquet("users", users, f"{USER_PARQUET}")
+        file_paquet_payments = gerar_paquet("payments", payments, f"{PAYMENTS_PARQUET}")
     
     @task_group(group_id='Upload')
     def upload():
