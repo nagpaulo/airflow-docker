@@ -135,7 +135,7 @@ def get_dados_create_paquet():
             bucket=SOURCE_BUCKET,
             gcp_conn_id=GCS_CONN_ID,
         )
-    
+        
     users_data = extract_users()
     payments_data = extract_payments()
     
