@@ -6,3 +6,24 @@ app/gen/.env
 .env
 app/gen/gcp_key_file.json
 gcp_key_file.json
+
+*.egg-info/
+*.csv
+*.json
+*.db
+tmp*
+__pycache__
+target/
+dbt_packages/
+logs/
+*.duckdb
+**/.logs_queue
+**/.nux
+**/.telemetry
+**/history
+**/schedules
+**/storage
+
+# Keeps
+!geography.csv
+!dashboard.json
