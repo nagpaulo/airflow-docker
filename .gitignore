@@ -6,3 +6,4 @@ app/gen/.env
 .env
 app/gen/gcp_key_file.json
 gcp_key_file.json
+requirements_bkp.txt
